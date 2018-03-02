@@ -5,7 +5,7 @@ import './main.html';
 
 Template.index.onCreated(function indexOnCreated() {
 
-  this.currentUser = new ReactiveVar('teste');
+  this.currentUser = new ReactiveVar('');
 
 });
 
