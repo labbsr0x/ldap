@@ -1,33 +1,48 @@
-import { Meteor } from 'meteor/meteor';
+import {Meteor} from 'meteor/meteor';
 import ldap from 'ldap';
 
 Meteor.startup(() => {
-  console.log("passei aqui");
+    console.log("passei aqui");
 
-    const usuario = 'F1234547';
-    const senha =  'suasenha';
+    const baseDN           = process.env.LDAP_base_dn;
+    const user             = process.env.LDAP_user;
+    const password         = process.env.LDAP_password;
+    const host             = process.env.LDAP_host;
+    const port             = process.env.LDAP_port;
+    const objectClass      = process.env.LDAP_object_class;
+    const searchField      = process.env.LDAP_search_field;
+    const searchFilter     = process.env.LDAP_search_filter;
+    const searchScope      = process.env.LDAP_search_scope;
+    const searchAttributes = process.env.LDAP_search_attributes.split(',');
+    const timeout          = process.env.LDAP_timeout;
+    const connectTimeout   = process.env.LDAP_connect_timeout;
+    const idleTimeout      = process.env.LDAP_idle_timeout;
+    const tlsOptions       = process.env.LDAP_tls_options;
+    const strictDN         = process.env.LDAP_strict_dn;
+
+    //  const searchAttributes = ['*'];
 
     const client = ldap.createClient({
-        url: 'ldaps://aplic.ldapbb.bb.com.br:636'
+        url: `${host}:${port}`,
+        timeout,
+        tlsOptions,
+        connectTimeout,
+        idleTimeout,
+        strictDN
     });
 
-    console.log('haahah');
-
-    const subDn = `ou=usuarios,ou=acesso,o=bb,c=br`;
-    const dn = `ou=funcionarios,${subDn}`;
-
-    client.bind(`uid=${usuario},${dn}`, senha, err => {
+    client.bind(`uid=${user},${baseDN}`, password, err => {
         console.log("deu merda", err);
+        //todo tratamento de erro (Credentials are not valid)
     });
 
     const opts = {
-        filter: `(&(objectclass=inetOrgPerson)(uid=${usuario}))`,
-        scope: 'sub',
-        attributes: ['sn', 'cn', 'mail' ]
+        filter: `(&(objectclass=${objectClass})(${searchField}=${searchFilter}))`,
+        scope: searchScope,
+        attributes: searchAttributes
     };
 
-    console.log('haahah3');
-    client.search(subDn, opts, (err, res) => {
+    client.search(baseDN, opts, (err, res) => {
 
         console.log("deu merda 2", err);
 
@@ -38,7 +53,7 @@ Meteor.startup(() => {
             console.log('referral: ' + referral.uris.join());
         });
         res.on('error', function (err) {
-            console.error('error: ' + err.message);
+            console.error('error 2365: ' + err.message);
         });
         res.on('end', function (result) {
             console.log('status: ' + result);
