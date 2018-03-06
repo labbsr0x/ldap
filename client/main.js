@@ -30,6 +30,7 @@ Template.index.helpers({
 Template.hello.events({
   'click button'(event, instance) {
     // increment the counter when button is clicked
+      AccountsTemplates.logout();
     instance.counter.set(instance.counter.get() + 1);
   },
 });

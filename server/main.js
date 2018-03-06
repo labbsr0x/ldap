@@ -2,6 +2,13 @@ import {Meteor} from 'meteor/meteor';
 import ldap from 'ldap';
 
 Meteor.startup(() => {
+
+    // testeLdap();
+
+});
+
+const testeLdap = () => {
+
     console.log("passei aqui");
 
     const baseDN           = process.env.LDAP_base_dn;
@@ -60,6 +67,4 @@ Meteor.startup(() => {
             console.log('status: ' + result.status);
         });
     });
-
-});
-
+};
