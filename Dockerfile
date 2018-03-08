@@ -119,6 +119,9 @@ COPY \
     src/.meteor/versions \
     .meteor/
 
+COPY src/package.json /home/ldap/app/package.json
+RUN meteor npm install --save @babel/runtime
+
 RUN \
     groupmod -g 1000 ldap && \
     usermod -u 1000 ldap && \
@@ -127,8 +130,6 @@ RUN \
     chmod g+s /home/ldap && \
     gosu ldap /home/ldap/.meteor/meteor build --directory /home/ldap/app_build
 
-COPY src/package.json /home/ldap/app/package.json
-RUN meteor npm install --save @babel/runtime
 
 ENV PORT=3000
 EXPOSE $PORT
