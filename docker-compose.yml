@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  ldap:
+    image: labbsr0x/meteor-ldap
+    build: .
+    volumes:
+      - ./src:/home/wekan/app
+    ports:
+      - 8000:3000
